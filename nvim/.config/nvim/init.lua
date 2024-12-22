@@ -556,7 +556,66 @@ require("lazy").setup({
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
 				-- ts_ls = {},
 				--
-
+				--vue
+				volar = {
+					init_options = {
+						vue = {
+							hybridMode = false,
+						},
+					},
+					settings = {
+						typescript = {
+							inlayHints = {
+								enumMemberValues = {
+									enabled = true,
+								},
+								functionLikeReturnTypes = {
+									enabled = true,
+								},
+								propertyDeclarationTypes = {
+									enabled = true,
+								},
+								parameterTypes = {
+									enabled = true,
+									suppressWhenArgumentMatchesName = true,
+								},
+								variableTypes = {
+									enabled = true,
+								},
+							},
+						},
+					},
+				},
+				--typescript
+				ts_ls = {
+					init_options = {
+						plugins = {
+							{
+								name = "@vue/typescript-plugin",
+								location = vim.fn.stdpath("data")
+									.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+								languages = { "vue" },
+							},
+						},
+					},
+					settings = {
+						typescript = {
+							tsserver = {
+								useSyntaxServer = false,
+							},
+							inlayHints = {
+								includeInlayParameterNameHints = "all",
+								includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+								includeInlayFunctionParameterTypeHints = true,
+								includeInlayVariableTypeHints = true,
+								includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+								includeInlayPropertyDeclarationTypeHints = true,
+								includeInlayFunctionLikeReturnTypeHints = true,
+								includeInlayEnumMemberValueHints = true,
+							},
+						},
+					},
+				},
 				lua_ls = {
 					-- cmd = {...},
 					-- filetypes = { ...},
@@ -567,7 +626,7 @@ require("lazy").setup({
 								callSnippet = "Replace",
 							},
 							-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-							-- diagnostics = { disable = { 'missing-fields' } },
+							diagnostics = { disable = { "missing-fields" } },
 						},
 					},
 				},
