@@ -781,7 +781,8 @@ require("lazy").setup({
 					-- Accept ([y]es) the completion.
 					--  This will auto-import if your LSP supports it.
 					--  This will expand snippets if the LSP sent a snippet.
-					["<C-y>"] = cmp.mapping.confirm({ select = true }),
+					--["<C-y>"] = cmp.mapping.confirm({ select = true }),
+					["<TAB>"] = cmp.mapping.confirm({ select = true }),
 
 					-- If you prefer more traditional completion keymaps,
 					-- you can uncomment the following lines
@@ -957,21 +958,21 @@ require("lazy").setup({
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
 		-- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-		icons = vim.g.have_nerd_font and {} or {
-			cmd = "⌘",
-			config = "🛠",
-			event = "📅",
-			ft = "📂",
-			init = "⚙",
-			keys = "🗝",
-			plugin = "🔌",
-			runtime = "💻",
-			require = "🌙",
-			source = "📄",
-			start = "🚀",
-			task = "📌",
-			lazy = "💤 ",
-		},
+		--icons = vim.g.have_nerd_font and {} or {
+		--	cmd = "⌘",
+		--	config = "🛠",
+		--	event = "📅",
+		--	ft = "📂",
+		--	init = "⚙",
+		--	keys = "🗝",
+		--	plugin = "🔌",
+		--	runtime = "💻",
+		--	require = "🌙",
+		--	source = "📄",
+		--	start = "🚀",
+		--	task = "📌",
+		--	lazy = "💤 ",
+		--},
 	},
 })
 
