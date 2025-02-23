@@ -6,18 +6,10 @@ return {
 	opts = {
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
-		explorer = { enabled = true },
+		explorer = { enabled = false },
 		indent = { enabled = true },
 		input = { enabled = true },
-		picker = {
-			enabled = true,
-			---@class snacks.picker.sources.Config
-			sources = {
-				files = {
-					follow = true,
-				},
-			},
-		},
+		picker = { enabled = true },
 		notifier = { enabled = true },
 		quickfile = { enabled = true },
 		scope = { enabled = true },
@@ -28,7 +20,6 @@ return {
 	keys = {
 		-- stylua: ignore start
 		-- Top Pickers & Explorer
-			{ "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
 		-- Find
 			{ "<leader><leader>", function() Snacks.picker.buffers() end, desc = "Buffers" },
 			{ "<leader>sf", function() Snacks.picker.files() end, desc = "[S]earch [F]iles" },
