@@ -4,6 +4,7 @@ return {
 		"leoluz/nvim-dap-go",
 		"rcarriga/nvim-dap-ui",
 		"nvim-neotest/nvim-nio",
+		"theHamsta/nvim-dap-virtual-text",
 	},
 	config = function()
 		local dap = require("dap")
@@ -11,6 +12,7 @@ return {
 
 		require("dapui").setup()
 		require("dap-go").setup()
+		require("nvim-dap-virtual-text").setup()
 
 		-- keymaps
 		vim.keymap.set("n", "<space>b", dap.toggle_breakpoint)
