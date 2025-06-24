@@ -1,11 +1,10 @@
+ags-hyprpanel-git
 agsv1
 agsv1-debug
 appimagelauncher
 aylurs-gtk-shell-git
 gpu-screen-recorder
 grimblast-git
-hyprpolkitagent-git
-hyprsunset-git
 matugen-bin
 protonup-qt
 spotify
@@ -16,4 +15,5 @@ waypaper
 wlogout
 xpadneo-dkms
 yay-git
+zen-browser-bin
 zsh-theme-powerlevel10k-git
