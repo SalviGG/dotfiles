@@ -111,33 +111,45 @@ return {
 		--  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
 		--  - settings (table): Override the default settings passed when initializing the server.
 		--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+		local vue_ls_path = vim.fn.stdpath("data")
+			.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 		local servers = {
 			-- clangd = {},
 			-- gopls = {},
 			--typescript
-			ts_ls = {
-				filetypes = {
-					"typescript",
-					"javascript",
-					"javascriptreact",
-					"typescriptreact",
-					"vue",
-				},
-				init_options = {
-					plugins = {
-						{
-							name = "@vue/typescript-plugin",
-							location = vim.fn.stdpath("data")
-								.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
-							languages = { "vue" },
-						},
-					},
-				},
-			},
 			vue_ls = {
 				init_options = {
 					vue = {
 						hybridMode = false,
+					},
+				},
+			},
+			ts_ls = {
+				init_options = {
+					plugins = {
+						{
+							name = "@vue/typescript-plugin",
+							location = vue_ls_path,
+							languages = { "vue" },
+						},
+					},
+				},
+				filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+				settings = {
+					typescript = {
+						tsserver = {
+							useSyntaxServer = false,
+						},
+						inlayHints = {
+							includeInlayParameterNameHints = "all",
+							includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+							includeInlayFunctionParameterTypeHints = true,
+							includeInlayVariableTypeHints = true,
+							includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+							includeInlayPropertyDeclarationTypeHints = true,
+							includeInlayFunctionLikeReturnTypeHints = true,
+							includeInlayEnumMemberValueHints = true,
+						},
 					},
 				},
 			},
@@ -166,18 +178,16 @@ return {
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 		require("mason-lspconfig").setup({
-			ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-			automatic_installation = false,
-			handlers = {
-				function(server_name)
-					local server = servers[server_name] or {}
-					-- This handles overriding only values explicitly passed
-					-- by the server configuration above. Useful when disabling
-					-- certain features of an LSP (for example, turning off formatting for ts_ls)
-					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
-				end,
-			},
+
+			automatic_enable = vim.tbl_keys(servers or {}),
+
+			ensure_installed = { "vue_ls", "ts_ls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+
+			automatic_installation = true,
 		})
+
+		for server_name, config in pairs(servers) do
+			vim.lsp.config(server_name, config)
+		end
 	end,
 }
