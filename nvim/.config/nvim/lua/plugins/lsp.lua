@@ -115,7 +115,7 @@ return {
 			.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 		local servers = {
 			-- clangd = {},
-			-- gopls = {},
+			gopls = {},
 			--typescript
 			vue_ls = {
 				init_options = {

@@ -28,7 +28,7 @@ alias air='$(go env GOPATH)/bin/air'
 alias dlv='$(go env GOPATH)/bin/dlv'
 
 #Apps aliases
-alias nv='nvim'
+alias vi='nvim'
 
 #Git Aliases
 alias gs='git status'
