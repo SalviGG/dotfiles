@@ -3,7 +3,7 @@ return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
 		-- Automatically install LSPs and related tools to stdpath for Neovim
-		{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
+		{ "williamboman/mason.nvim", opts = {} }, -- NOTE: Must be loaded before dependants
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 
@@ -102,6 +102,8 @@ return {
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
+		-- local capabilities = require("blink.cmp").get_lsp_capabilities()
+
 		-- Enable the following language servers
 		--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
 		--
@@ -111,44 +113,61 @@ return {
 		--  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
 		--  - settings (table): Override the default settings passed when initializing the server.
 		--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
 		local vue_ls_path = vim.fn.stdpath("data")
 			.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 		local servers = {
 			-- clangd = {},
+			--Golang
 			gopls = {},
-			--typescript
-			vue_ls = {
-				init_options = {
-					vue = {
-						hybridMode = false,
-					},
-				},
-			},
-			ts_ls = {
-				init_options = {
-					plugins = {
-						{
-							name = "@vue/typescript-plugin",
-							location = vue_ls_path,
-							languages = { "vue" },
-						},
-					},
-				},
-				filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+			-- --typescript
+			vtsls = {
+				filetypes = { "javascript", "typescript", "vue" },
 				settings = {
-					typescript = {
-						tsserver = {
-							useSyntaxServer = false,
+					complete_function_calls = true,
+					vtsls = {
+						enableMoveToFileCodeAction = true,
+						autoUseWorkspaceTsdk = true,
+						experimental = {
+							completion = {
+								enableServerSideFuzzyMatch = true,
+								entriesLimit = 50,
+							},
 						},
-						inlayHints = {
-							includeInlayParameterNameHints = "all",
-							includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-							includeInlayFunctionParameterTypeHints = true,
-							includeInlayVariableTypeHints = true,
-							includeInlayVariableTypeHintsWhenTypeMatchesName = true,
-							includeInlayPropertyDeclarationTypeHints = true,
-							includeInlayFunctionLikeReturnTypeHints = true,
-							includeInlayEnumMemberValueHints = true,
+						tsserver = {
+							globalPlugins = {
+								{
+									name = "@vue/typescript-plugin",
+									location = vim.fn.stdpath("data")
+										.. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+									languages = { "vue" },
+									configNamespace = "typescript",
+									enableForWorkspaceTypeScriptVersions = true,
+								},
+							},
+							maxTsServerMemory = 3072,
+							watchOptions = {
+								excludeDirectories = { "**/node_modules", "**/.git" },
+							},
+						},
+					},
+					typescript = {
+						updateImportsOnFileMove = { enabled = "always" },
+						suggest = {
+							completeFunctionCalls = true,
+							includeCompletionsForModuleExports = false,
+							includeAutomaticOptionalChainCompletions = false,
+						},
+						preferences = {
+							includePackageJsonAutoImports = "off",
+						},
+						surveys = {
+							enabled = false,
+						},
+					},
+					javascript = {
+						suggest = {
+							names = false,
 						},
 					},
 				},
@@ -167,8 +186,28 @@ return {
 					},
 				},
 			},
+			yamlls = {
+				filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.heml-values" },
+				root_dir = function(fname)
+					return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+				end,
+				single_file_support = true,
+				settings = {
+					redhat = { telemetry = { enabled = false } },
+				},
+				schemas = {
+					["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+					["../path/relative/to/file.yml"] = "/.github/workflows/*",
+					["/path/from/root/of/project"] = "/.github/workflows/*",
+				},
+			},
 		}
-		require("mason").setup()
+		require("mason").setup({
+			registries = {
+				"github:mason-org/mason-registry",
+				"github:Crashdummyy/mason-registry",
+			},
+		})
 		-- You can add other tools here that you want Mason to install
 		-- for you, so that they are available from within Neovim.
 		local ensure_installed = vim.tbl_keys(servers or {})
@@ -178,14 +217,10 @@ return {
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 		require("mason-lspconfig").setup({
-
 			automatic_enable = vim.tbl_keys(servers or {}),
-
-			ensure_installed = { "vue_ls", "ts_ls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-
+			ensure_installed = { "vue_ls", "vtsls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
 			automatic_installation = true,
 		})
-
 		for server_name, config in pairs(servers) do
 			vim.lsp.config(server_name, config)
 		end
