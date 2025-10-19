@@ -13,8 +13,26 @@ return {
 
 		-- Allows extra capabilities provided by nvim-cmp
 		"hrsh7th/cmp-nvim-lsp",
+		"nvim-java/nvim-java",
 	},
 	config = function()
+		require("mason").setup()
+		-- You can add other tools here that you want Mason to install
+		-- for you, so that they are available from within Neovim.
+		local ensure_installed = vim.tbl_keys(servers or {})
+		vim.list_extend(ensure_installed, {
+			"stylua", -- Used to format Lua code
+		})
+		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+		require("mason-lspconfig").setup({
+
+			automatic_enable = vim.tbl_keys(servers or {}),
+
+			ensure_installed = { "vue_ls", "ts_ls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+
+			automatic_installation = true,
+		})
 		--  This function gets run when an LSP attaches to a particular buffer.
 		--    That is to say, every time a new file is opened that is associated with
 		--    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
@@ -94,7 +112,10 @@ return {
 				end
 			end,
 		})
-
+		require("java").setup({
+			-- Your custom jdtls settings goes here
+		})
+		require("lspconfig").jdtls.setup({})
 		-- LSP servers and clients are able to communicate to each other what features they support.
 		--  By default, Neovim doesn't support everything that is in the LSP specification.
 		--  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
@@ -202,6 +223,7 @@ return {
 				},
 			},
 		}
+<<<<<<< HEAD
 		require("mason").setup({
 			registries = {
 				"github:mason-org/mason-registry",
@@ -221,6 +243,9 @@ return {
 			ensure_installed = { "vue_ls", "vtsls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
 			automatic_installation = true,
 		})
+=======
+
+>>>>>>> 5119f13 (Added java support for nvim)
 		for server_name, config in pairs(servers) do
 			vim.lsp.config(server_name, config)
 		end
