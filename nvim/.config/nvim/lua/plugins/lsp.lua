@@ -223,7 +223,6 @@ return {
 				},
 			},
 		}
-<<<<<<< HEAD
 		require("mason").setup({
 			registries = {
 				"github:mason-org/mason-registry",
@@ -243,9 +242,7 @@ return {
 			ensure_installed = { "vue_ls", "vtsls", "lua_ls" }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
 			automatic_installation = true,
 		})
-=======
 
->>>>>>> 5119f13 (Added java support for nvim)
 		for server_name, config in pairs(servers) do
 			vim.lsp.config(server_name, config)
 		end
